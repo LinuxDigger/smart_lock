@@ -77,7 +77,7 @@
 
 #### 首页
 
-<img src="readme_images/result02.png" alt="result02" style="zoom: 33%;" />
+<img src="readme_images/result02.png" alt="result02" style="zoom: 33%;max-width: 40%;" />
 
 #### 开关锁
 
@@ -85,15 +85,15 @@
 
 #### 日志查看
 
-<img src="readme_images/result04.png" alt="result04" style="zoom: 50%;" />
+<img src="readme_images/result04.png" alt="result04" style="zoom: 50%;max-width: 40%;" />
 
 #### 密码管理
 
-<img src="readme_images/result05.png" alt="result05" style="zoom: 33%;" />
+<img src="readme_images/result05.png" alt="result05" style="zoom: 33%;max-width: 40%;" />
 
 #### 视频监控（支持人员识别）
 
-<img src="readme_images/result06.png" alt="result06" style="zoom:33%;" />
+<img src="readme_images/result06.png" alt="result06" style="zoom:33%;max-width: 40%;" />
 
 #### 功能:
 
