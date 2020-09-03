@@ -1,0 +1,4 @@
+const LONG_POLLING_TIMEOUT = 1.2 * 60 * 1000;
+
+const CLIENT_ID = '145db89e8a4b347b4030d273c03a06ba';
+const LOCK_ID = '7a5d156d704d20a77477d0aae1291be7';

@@ -1,0 +1,38 @@
+1.JAVA里面自带的加密算法，输入格式有些和标准的不一样，比如PBKDF2，他是char输入的，c语言可能是byte输入的，他们的计算结果多半可能不一样，如果你们计算出来的AES密匙和我的不一样，多半就是这个原因，你们注意看我返回的AES密匙。
+2.不同语言的加密算法库可能存在不兼容的问题，（意识是：只能自己的库加密自己的库解密，其它的库解不开），如果到时候我们计算结果不一样，我们就要一步一步的对照，是哪一个算法加密过后，结果就不一样了。
+3.credential 证书
+4.IMEI 手机的IMEI
+5.如果你们要通过云端测试，请使用我提供的credential和IMEI。
+6.具体每一步参考java代码和注释。
+7.test.js 这个文件是我用javascript做加密解密测试用的，如果你会javascript就可以用，可以看看返回的数据结构。
+8.注意查看加密/解密返回的error字段。还有比对你上传的数据和我返回的是否一致。
+
+服务器已经支持https
+上一次发的链接都可以用https去访问，不过https的端口是8083
+注意下面的链接都是https
+解密api（post或者get请求都可以。但是必须是表单数据）
+https://39.107.123.167:8083/lock/test/encrypt
+示例
+https://39.107.123.167:8083/lock/test/encrypt?ID=af2a6ca13946758dd12b0f9a67eb22b6&data=MC44ODU2ODczODc2NDYwNjExMC4xNjEyNzg1MzI0NTg5OTEzNzAuNDI0MjE4MTM2NTQ4MTEyMTMwLjg0MTgxMDY1MjIwMTc3NDgwLjExMzQ5MjMyNzc4MDI1NDIwLjI3Njg4OTg2NjQyMDAzNjMwLjU4NjI2MDUzMzg4MTc0MjgwLjY4MTAwNDgyMTYxNjMyNzYwLjM0MDU1MjczOTUzMTc4NTMz&timestamp=1587646997508
+
+加密api（post或者get请求都可以。但是必须是表单数据）
+https://39.107.123.167:8083/lock/test/encrypt
+示例
+https://39.107.123.167:8083/lock/test/decrypt?type=data&timestamp=1587646997508&hash=SqM4YbtbxgChvyZwOcSrDb1qoF1yIdNGMpu0Muqi7wA%3D&ID=af2a6ca13946758dd12b0f9a67eb22b6&data=mxXWTPd4jTk%2BKbhFJkQC%2Bo%2BVdo87kTgD9896tlVpHrKMHRBRXXRIKIfp6fmTOJNND5q1I9%2FT2%2BddXUaalzTzvATGI45NMFQsM9tbtExknw8TeENaoC14tfIf%2FWkFAy3VJzMLIFJmm0%2FvzwO9PHn%2FgrQ5HV8O%2FKtA1VYB%2FcpRdX82Elgc1Y%2BN22tcDvaWSQdmBN%2BaTYkYKOMabva3KUAevrlKSv1bGoE4RZJB27DllK0%3D
+
+***注意：服务器是有时间戳判断的，默认超时是10s，上面那两个数据包现在都是超时的，可以参考格式，你们要测试的话，要实时生成，及时测试。
+
+加密的表单格式：
+			ID: "12345454324565776",
+			data: "需要加密的数据，base64编码",
+			timestamp: timestamp, //<时间戳,可以不是当前时间>
+
+解密的表单格式：
+			type: "data", //这个字段必须为data
+			timestamp: timestamp, //<时间戳,必须和当前的服务器时间差值小于10s>
+			hash: "hash值",//base64编码
+			ID: "12345454324565776",
+			data: "需要解密的数据，base64编码",
+
+
+			

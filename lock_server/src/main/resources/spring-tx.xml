@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- 开启AOP注解扫描 -->
+    <aop:aspectj-autoproxy proxy-target-class="true" />
+
+    <!-- 事务管理器，依赖于数据源 -->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    
+    <!-- 编写通知：对事务进行增强（通知），需要编写对切入点和具体执行事务细节 -->
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <!--
+                为切入点方法添加事务详情
+                name：方法名，*表示任意方法名称
+                propagation：设置传播行为
+                isolation：设置隔离级别
+                read-only：是否只读
+            -->
+            <tx:method name="add*" propagation="REQUIRED" isolation="DEFAULT" read-only="false" rollback-for="Exception" />
+            <tx:method name="delete*" propagation="REQUIRED" isolation="DEFAULT" read-only="false" rollback-for="Exception" />
+            <tx:method name="update*" propagation="REQUIRED" isolation="DEFAULT" read-only="false" rollback-for="Exception" />
+        </tx:attributes>
+    </tx:advice>
+    
+    <!-- 设置AOP，让Spring自动对目标生成代理，需要使用AspectJ表达式 -->
+    <aop:config proxy-target-class="true">
+        <!-- 切面：整合切入点和通知 -->
+        <aop:advisor advice-ref="txAdvice" pointcut="within(com.zqz.controller..*)" />
+    </aop:config>
+</beans>

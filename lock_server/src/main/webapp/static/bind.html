@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>龙芯智能锁</title>
+    <link rel="stylesheet" href="css/weui.css" />
+</head>
+
+<body>
+    <div class="page">
+        <div class="weui-form">
+            <div class="weui-form__text-area">
+                <h2 class="weui-form__title">用户绑定</h2>
+                <div class="weui-form__desc">请打开智能锁的绑定模式，输入智能锁显示的ID和密码进行绑定。</div>
+            </div>
+            <div class="weui-form__control-area">
+                <div class="weui-cells__group weui-cells__group_form">
+                    <!--                    <div class="weui-cells__title">表单组标题</div>-->
+                    <div class="weui-cells weui-cells_form">
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd"><label class="weui-label">ID</label></div>
+                            <div class="weui-cell__bd">
+                                <input id="js_input" class="weui-input" placeholder="请输入智能锁ID" />
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd"><label class="weui-label">密码</label></div>
+                            <div class="weui-cell__bd">
+                                <input id="js_input" class="weui-input" placeholder="请输入绑定密码" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-form__tips-area">
+                <p class="weui-form__tips">
+                    首次绑定的用户默认为超级管理员
+                </p>
+            </div>
+            <div class="weui-form__opr-area">
+                <a class="weui-btn weui-btn_primary weui-btn_disabled" href="javascript:" id="showTooltips">确定</a>
+            </div>
+            <div class="weui-form__extra-area">
+                <div class="weui-footer">
+                    <p class="weui-footer__links">
+                        <a href="javascript:" class="weui-footer__link">龙芯智能锁</a>
+                    </p>
+                    <p class="weui-footer__text">Copyright &copy; 2020-2022 smart lock</p>
+                </div>
+            </div>
+        </div>
+        <div id="js_toast" style="display: none;">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+                <p class="weui-toast__content">绑定成功！</p>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/jquery-3.5.1.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            var $toast = $('#js_toast');
+            var $input = $('#js_input');
+            $input.on('input', function() {
+                if ($input.val()) {
+                    $('#showTooltips').removeClass('weui-btn_disabled');
+                } else {
+                    $('#showTooltips').addClass('weui-btn_disabled');
+                }
+            });
+            $('#showTooltips').on('click', function() {
+                if ($(this).hasClass('weui-btn_disabled')) return;
+
+                // toptips的fixed, 如果有`animation`, `position: fixed`不生效
+                $('.page.cell').removeClass('slideIn');
+
+                $toast.fadeIn(100);
+                setTimeout(function() {
+                    $toast.fadeOut(100);
+                    location.href = "index.html";
+                }, 2000);
+            });
+        });
+
+    </script>
+</body>
+
+</html>

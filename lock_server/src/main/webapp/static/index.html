@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>龙芯智能锁</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+    <link rel="stylesheet" href="css/weui.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="fontawesome-free-5.13.1-web/css/all.css" />
+</head>
+
+<body>
+
+    <div class="page full_size" style="position: fixed;" id="app">
+        <div class="page__bd" style="height: 100%;">
+            <div class="weui-tab">
+                <div class="weui-tab__panel">
+                    <div class="full_size " style="overflow: auto;">
+
+                        <div class="weui-msg">
+                            <div class="weui-msg__icon-area"><i style="font-size: 6rem;" class="fa" v-bind:class="[is_locked?'lock_close':'lock_open']"></i></div>
+                            <div class="weui-msg__text-area">
+                                <h2 class="weui-msg__title">{{is_locked?'门锁已关':'门锁已开'}}</h2>
+                                <div style="text-align: left;">
+                                    <div class="weui-panel">
+                                        <div class="weui-panel__bd">
+                                            <div class="weui-media-box weui-media-box_small-appmsg">
+                                                <div class="weui-cells">
+
+                                                    <div style="padding: 6px 0;" class="weui-cell weui-cell_active weui-cell_access weui-cell_example" href="javascript:" @click="open_notice(index);" v-for="(notice,index) in notices">
+                                                        <div class="weui-cell__hd"><i v-bind:class="[notice.icon_class]" class="fas" style="width: 20px; height: 20px; margin-right: 16px; display: block;" v-bind:style="{color: notice.icon_color}"></i></div>
+                                                        <div class="weui-cell__bd weui-cell_primary">
+                                                            <p>{{notice.content}}<span v-bind:class="[notice.badge_class]" class="weui-badge" style="margin-left: 5px;">{{notice.badge_content}}</span></p>
+                                                        </div>
+                                                        <span class="weui-cell__ft"></span>
+                                                    </div>
+
+                                                    <!--
+                                                    <div id="info" style="padding: 6px 0; display: none;" class="weui-cell weui-cell_active weui-cell_access weui-cell_example" href="javascript:" v-on:click="">
+                                                        <div class="weui-cell__hd"><i class="fas fa-info-circle" style="width: 20px; height: 20px; margin-right: 16px; display: block; color: #07c160;"></i></div>
+                                                        <div class="weui-cell__bd weui-cell_primary">
+                                                            <p>有新的访客！<span class="weui-badge" style="margin-left: 5px;">New</span></p>
+                                                        </div>
+                                                        <span class="weui-cell__ft"></span>
+                                                    </div>
+-->
+
+                                                    <!--
+                                                    <div style="padding: 6px 0;" class="weui-cell weui-cell_active weui-cell_access weui-cell_example" href="javascript:" v-on:click="new_log_count=0; $('.weui-tabbar__item').eq(1).click();">
+                                                        <div class="weui-cell__hd"><i class="fas fa-book" style="width: 20px; height: 20px; margin-right: 16px; display: block; color: #365aff;"></i></div>
+                                                        <div class="weui-cell__bd weui-cell_primary">
+                                                            <p>新增<span>{{new_log_count}}</span>条开锁记录</p>
+                                                        </div>
+                                                        <span class="weui-cell__ft"></span>
+                                                    </div>
+-->
+
+                                                    <!--
+                                                    <div style="padding: 6px 0;" class="weui-cell weui-cell_active weui-cell_access weui-cell_example" href="javascript:" v-on:click="$('.weui-tabbar__item').eq(3).click();">
+                                                        <div class="weui-cell__hd"><i class="fas fa-bell" style="width: 20px; height: 20px; margin-right: 16px; display: block; color: red;"></i></div>
+                                                        <div class="weui-cell__bd weui-cell_primary">
+                                                            <p>异常人员，请及时查看<span class="weui-badge weui-badge_dot" style="margin-left: 5px; margin-right: 5px;"></span></p>
+                                                        </div>
+                                                        <span class="weui-cell__ft"></span>
+                                                    </div>
+-->
+                                                    <div style="padding: 6px 0;" class="weui-cell weui-cell_active weui-cell_access weui-cell_example" href="javascript:">
+                                                        <div class="weui-cell__hd"><i class="fas fa-exclamation-triangle" style="width: 20px; height: 20px; margin-right: 16px; display: block;    color: #ff9600;"></i></div>
+                                                        <div class="weui-cell__bd weui-cell_primary">
+                                                            <p>网络信号不佳</p>
+                                                        </div>
+                                                        <span class="weui-cell__ft"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="weui-msg__opr-area">
+                                <p class="weui-btn-area">
+                                    <a href="javascript:void(0);" class="weui-btn weui-btn_primary" v-on:click="lock_button_click($event);">{{is_locked?'打开门锁':'关闭门锁'}}</a>
+                                </p>
+                            </div>
+                            <div class="weui-msg__tips-area">
+                                <p class="weui-msg__tips">{{is_locked?'门锁已经关闭！':'检测到你的门锁处于打开状态，请及时关锁！'}}</p>
+                            </div>
+                            <div class="weui-msg__extra-area">
+                                <div class="weui-footer">
+                                    <p class="weui-footer__links">
+                                        <a href="javascript:" class="weui-footer__link">龙芯智能锁</a>
+                                    </p>
+                                    <p class="weui-footer__text">Copyright &copy; 2020-2022 smart lock</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="full_size hidden" style="overflow: auto;">
+
+                        <div class="page__bd">
+                            <!--<a href="javascript:" class="weui-btn weui-btn_primary">点击展现searchBar</a>-->
+                            <div class="weui-search-bar" id="searchBar">
+                                <form class="weui-search-bar__form">
+                                    <div class="weui-search-bar__box">
+                                        <i class="weui-icon-search"></i>
+                                        <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required />
+                                        <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+                                    </div>
+                                    <label class="weui-search-bar__label" id="searchText">
+                                        <i class="weui-icon-search"></i>
+                                        <span>搜索</span>
+                                    </label>
+                                </form>
+                                <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+                            </div>
+                            <div class="weui-cells searchbar-result" id="searchResult" style="display: none;margin-top: 0;font-size: 14px;">
+                                <div class="weui-cell weui-cell_active weui-cell_access">
+                                    <div class="weui-cell__bd weui-cell_primary">
+                                        <p>密码开锁</p>
+                                    </div>
+                                </div>
+                                <div class="weui-cell weui-cell_active weui-cell_access">
+                                    <div class="weui-cell__bd weui-cell_primary">
+                                        <p>远程开锁</p>
+                                    </div>
+                                </div>
+                                <div class="weui-cell weui-cell_active weui-cell_access">
+                                    <div class="weui-cell__bd weui-cell_primary">
+                                        <p>开锁失败记录</p>
+                                    </div>
+                                </div>
+                                <div class="weui-cell weui-cell_active weui-cell_access">
+                                    <div class="weui-cell__bd weui-cell_primary">
+                                        <p>开锁故障</p>
+                                    </div>
+                                </div>
+                                <div class="weui-cell weui-cell_active weui-cell_access">
+                                    <div class="weui-cell__bd weui-cell_primary">
+                                        <p>指纹开锁</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="page__bd">
+                            <div class="weui-form-preview" v-for="log in logs">
+                                <div class="weui-form-preview__hd">
+                                    <label class="weui-form-preview__label">{{log.create_time}}</label>
+                                    <em class="weui-form-preview__value" style="color: #464646; font-size: 1.3rem;">{{log.type}}</em>
+                                </div>
+                                <div class="weui-form-preview__bd" style="padding-top: 0;padding-bottom: 0;">
+                                    <div class="weui-form-preview__item" v-for="info in log.infos">
+                                        <label class="weui-form-preview__label">{{info[0]}}</label>
+                                        <span class="weui-form-preview__value">{{info[1]}}</span>
+                                    </div>
+                                </div>
+                                <div class="weui-form-preview__ft">
+                                    <a class="weui-form-preview__btn" v-bind:class="['weui-form-preview__btn_'+button[0]]" href="javascript:" v-for="button in log.buttons">{{button[1]}}</a>
+                                </div>
+                            </div>
+
+                            <div class="weui-form-preview">
+                                <div class="weui-form-preview__hd">
+                                    <label class="weui-form-preview__label">2020年07月16日</label>
+                                    <em class="weui-form-preview__value" style="color: #464646; font-size: 1.3rem;">远程开锁</em>
+                                </div>
+                                <div class="weui-form-preview__bd" style="padding-top: 0;padding-bottom: 0;">
+                                    <div class="weui-form-preview__item">
+                                        <label class="weui-form-preview__label">开锁人</label>
+                                        <span class="weui-form-preview__value">妻子</span>
+                                    </div>
+                                    <div class="weui-form-preview__item">
+                                        <label class="weui-form-preview__label">时间</label>
+                                        <span class="weui-form-preview__value">下午 5:35</span>
+                                    </div>
+                                </div>
+                                <div class="weui-form-preview__ft">
+                                    <a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">删除记录</a>
+                                </div>
+                            </div>
+                            <div class="weui-form-preview">
+                                <div class="weui-form-preview__hd">
+                                    <label class="weui-form-preview__label">2020年07月16日</label>
+                                    <em class="weui-form-preview__value" style="color: #464646; font-size: 1.3rem;">异常警告</em>
+                                </div>
+                                <div class="weui-form-preview__bd" style="padding-top: 0;padding-bottom: 0;">
+                                    <div class="weui-form-preview__item">
+                                        <label class="weui-form-preview__label">类型</label>
+                                        <span class="weui-form-preview__value">异常人员</span>
+                                    </div>
+                                    <div class="weui-form-preview__item">
+                                        <label class="weui-form-preview__label">时间</label>
+                                        <span class="weui-form-preview__value">下午 4:28</span>
+                                    </div>
+                                    <div class="weui-form-preview__item">
+                                        <label class="weui-form-preview__label">详细信息</label>
+                                        <span class="weui-form-preview__value">有未知人员在门前停留时间超过一分钟，在该期间内监测到门有轻微的震动，但是该人员并未尝试开启门锁。</span>
+                                    </div>
+                                </div>
+                                <div class="weui-form-preview__ft">
+                                    <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">删除记录</a>
+                                    <a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">查看视频记录</a>
+                                </div>
+                            </div>
+
+                            <div class="weui-form-preview">
+                                <div class="weui-form-preview__hd">
+                                    <label class="weui-form-preview__label">2020年07月16日</label>
+                                    <em class="weui-form-preview__value" style="color: #464646; font-size: 1.3rem;">密码开锁</em>
+                                </div>
+                                <div class="weui-form-preview__bd" style="padding-top: 0;padding-bottom: 0;">
+                                    <div class="weui-form-preview__item">
+                                        <label class="weui-form-preview__label">开锁人</label>
+                                        <span class="weui-form-preview__value">保姆</span>
+                                    </div>
+                                    <div class="weui-form-preview__item">
+                                        <label class="weui-form-preview__label">时间</label>
+                                        <span class="weui-form-preview__value">下午 2:46</span>
+                                    </div>
+                                </div>
+                                <div class="weui-form-preview__ft">
+                                    <a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">删除记录</a>
+                                </div>
+                            </div>
+
+                            <div class="weui-form-preview">
+                                <div class="weui-form-preview__hd">
+                                    <label class="weui-form-preview__label">2020年07月16日</label>
+                                    <em class="weui-form-preview__value" style="color: #464646; font-size: 1.3rem;">指纹开锁</em>
+                                </div>
+                                <div class="weui-form-preview__bd" style="padding-top: 0;padding-bottom: 0;">
+                                    <div class="weui-form-preview__item">
+                                        <label class="weui-form-preview__label">开锁人</label>
+                                        <span class="weui-form-preview__value">我</span>
+                                    </div>
+                                    <div class="weui-form-preview__item">
+                                        <label class="weui-form-preview__label">时间</label>
+                                        <span class="weui-form-preview__value">上午 10:19</span>
+                                    </div>
+                                </div>
+                                <div class="weui-form-preview__ft">
+                                    <a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">删除记录</a>
+                                </div>
+                            </div>
+
+                            <div class="weui-form-preview">
+                                <div class="weui-form-preview__hd">
+                                    <label class="weui-form-preview__label">2020年07月16日</label>
+                                    <em class="weui-form-preview__value" style="color: #464646; font-size: 1.3rem;">机械开锁</em>
+                                </div>
+                                <div class="weui-form-preview__bd" style="padding-top: 0;padding-bottom: 0;">
+                                    <div class="weui-form-preview__item">
+                                        <label class="weui-form-preview__label">开锁人</label>
+                                        <span class="weui-form-preview__value">未知</span>
+                                    </div>
+                                    <div class="weui-form-preview__item">
+                                        <label class="weui-form-preview__label">时间</label>
+                                        <span class="weui-form-preview__value">早上 8:37</span>
+                                    </div>
+                                </div>
+                                <div class="weui-form-preview__ft">
+                                    <a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">删除记录</a>
+                                </div>
+                            </div>
+
+                            <div class="weui-form-preview">
+                                <div class="weui-form-preview__hd">
+                                    <label class="weui-form-preview__label">2020年07月15日</label>
+                                    <em class="weui-form-preview__value" style="color: #464646; font-size: 1.3rem;">密码开锁</em>
+                                </div>
+                                <div class="weui-form-preview__bd" style="padding-top: 0;padding-bottom: 0;">
+                                    <div class="weui-form-preview__item">
+                                        <label class="weui-form-preview__label">开锁人</label>
+                                        <span class="weui-form-preview__value">我</span>
+                                    </div>
+                                    <div class="weui-form-preview__item">
+                                        <label class="weui-form-preview__label">时间</label>
+                                        <span class="weui-form-preview__value">晚上 9:23</span>
+                                    </div>
+                                </div>
+                                <div class="weui-form-preview__ft">
+                                    <a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">删除记录</a>
+                                </div>
+                            </div>
+
+
+                            <div class="weui-footer" style="margin-bottom: 80px;">
+                                <p class="" style="margin: 1rem;">没有更多记录了！</p>
+                                <p class="weui-footer__links">
+                                    <a href="javascript:" class="weui-footer__link">龙芯智能锁</a>
+                                </p>
+                                <p class="weui-footer__text">Copyright &copy; 2020-2022 smart lock</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="full_size hidden" style="overflow: auto;">
+
+                        <div class="page__bd">
+                            <!--<a href="javascript:" class="weui-btn weui-btn_primary">点击展现searchBar</a>-->
+                            <div class="weui-search-bar" id="searchBar">
+                                <form class="weui-search-bar__form">
+                                    <div class="weui-search-bar__box">
+                                        <i class="weui-icon-search"></i>
+                                        <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required />
+                                        <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+                                    </div>
+                                    <label class="weui-search-bar__label" id="searchText">
+                                        <i class="weui-icon-search"></i>
+                                        <span>搜索</span>
+                                    </label>
+                                </form>
+                                <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+                            </div>
+                            <div class="weui-cells searchbar-result" id="searchResult" style="display: none;margin-top: 0;font-size: 14px;">
+                                <div class="weui-cell weui-cell_active weui-cell_access">
+                                    <div class="weui-cell__bd weui-cell_primary">
+                                        <p>123456</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="page__bd">
+
+                            <div class="weui-panel" v-for="password in passwords">
+                                <div class="weui-panel__bd">
+                                    <div class="weui-form-preview__hd" style="padding-bottom: 0;">
+                                        <label class="weui-form-preview__label" style="color: black; font-size: 1.2rem;">{{password.type}}</label>
+                                        <em class="weui-form-preview__value" style="color: #464646; font-size: 0.8rem;">{{password.content}}</em>
+                                    </div>
+                                    <div class="weui-form-preview__bd" style="padding-top: 0;padding-bottom: 0;">
+                                        <div class="weui-form-preview__item" v-for="info in password.infos">
+                                            <label class="weui-form-preview__label">{{info[0]}}</label>
+                                            <span class="weui-form-preview__value">{{info[1]}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="weui-media-box weui-media-box_text" style="padding-bottom: 0;padding-top: 0;">
+                                        <ul class="weui-media-box__info">
+                                            <li class="weui-media-box__info__meta">{{password.create_date}}</li>
+                                            <li class="weui-media-box__info__meta">{{password.create_time}}</li>
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{password.urgent}}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="weui-form-preview__ft">
+                                        <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">修改密码</a>
+                                        <a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">删除密码</a>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="weui-panel">
+                                <div class="weui-panel__bd">
+                                    <div class="weui-form-preview__hd" style="padding-bottom: 0;">
+                                        <label class="weui-form-preview__label" style="color: black; font-size: 1.2rem;">永久密码</label>
+                                        <em class="weui-form-preview__value" style="color: #464646; font-size: 0.8rem;">****28</em>
+                                    </div>
+                                    <div class="weui-form-preview__bd" style="padding-top: 0;padding-bottom: 0;">
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label">创建者</label>
+                                            <span class="weui-form-preview__value">系统</span>
+                                        </div>
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label">有效期</label>
+                                            <span class="weui-form-preview__value">无限制</span>
+                                        </div>
+                                    </div>
+                                    <div class="weui-media-box weui-media-box_text" style="padding-bottom: 0;padding-top: 0;">
+                                        <ul class="weui-media-box__info">
+                                            <li class="weui-media-box__info__meta">2020年03月2日</li>
+                                            <li class="weui-media-box__info__meta">07:32</li>
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">非紧急</li>
+                                        </ul>
+                                    </div>
+                                    <div class="weui-form-preview__ft">
+                                        <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">修改密码</a>
+                                        <a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">删除密码</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="weui-panel">
+                                <div class="weui-panel__bd">
+                                    <div class="weui-form-preview__hd" style="padding-bottom: 0;">
+                                        <label class="weui-form-preview__label" style="color: black; font-size: 1.2rem;">临时密码</label>
+                                        <em class="weui-form-preview__value" style="color: #464646; font-size: 0.8rem;">****83</em>
+                                    </div>
+                                    <div class="weui-form-preview__bd" style="padding-top: 0;padding-bottom: 0;">
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label">创建者</label>
+                                            <span class="weui-form-preview__value">我</span>
+                                        </div>
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label">有效期</label>
+                                            <span class="weui-form-preview__value">30天</span>
+                                        </div>
+                                    </div>
+                                    <div class="weui-media-box weui-media-box_text" style="padding-bottom: 0;padding-top: 0;">
+                                        <ul class="weui-media-box__info">
+                                            <li class="weui-media-box__info__meta">2020年07月14日</li>
+                                            <li class="weui-media-box__info__meta">10:24</li>
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">非紧急</li>
+                                        </ul>
+                                    </div>
+                                    <div class="weui-form-preview__ft">
+                                        <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">修改密码</a>
+                                        <a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">删除密码</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="weui-panel">
+                                <div class="weui-panel__bd">
+                                    <div class="weui-form-preview__hd" style="padding-bottom: 0;">
+                                        <label class="weui-form-preview__label" style="color: black; font-size: 1.2rem;">紧急密码</label>
+                                        <em class="weui-form-preview__value" style="color: #464646; font-size: 0.8rem;">****56</em>
+                                    </div>
+                                    <div class="weui-form-preview__bd" style="padding-top: 0;padding-bottom: 0;">
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label">创建者</label>
+                                            <span class="weui-form-preview__value">系统</span>
+                                        </div>
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label">有效期</label>
+                                            <span class="weui-form-preview__value">无限制</span>
+                                        </div>
+                                    </div>
+                                    <div class="weui-media-box weui-media-box_text" style="padding-bottom: 0;padding-top: 0;">
+                                        <ul class="weui-media-box__info">
+                                            <li class="weui-media-box__info__meta">2020年01月28日</li>
+                                            <li class="weui-media-box__info__meta">00:23</li>
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">紧急</li>
+                                        </ul>
+                                    </div>
+                                    <div class="weui-form-preview__ft">
+                                        <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">修改密码</a>
+                                        <a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">删除密码</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="weui-panel">
+                                <div class="weui-panel__bd">
+                                    <div class="weui-form-preview__hd" style="padding-bottom: 0;">
+                                        <label class="weui-form-preview__label" style="color: black; font-size: 1.2rem;">临时密码</label>
+                                        <em class="weui-form-preview__value" style="color: #464646; font-size: 0.8rem;">****24</em>
+                                    </div>
+                                    <div class="weui-form-preview__bd" style="padding-top: 0;padding-bottom: 0;">
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label">创建者</label>
+                                            <span class="weui-form-preview__value">我</span>
+                                        </div>
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label">有效期</label>
+                                            <span class="weui-form-preview__value">已过期</span>
+                                        </div>
+                                    </div>
+                                    <div class="weui-media-box weui-media-box_text" style="padding-bottom: 0;padding-top: 0;">
+                                        <ul class="weui-media-box__info">
+                                            <li class="weui-media-box__info__meta">2020年02月17日</li>
+                                            <li class="weui-media-box__info__meta">09:31</li>
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">非紧急</li>
+                                        </ul>
+                                    </div>
+                                    <div class="weui-form-preview__ft">
+                                        <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">修改密码</a>
+                                        <a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">删除密码</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="weui-footer" style="margin-bottom: 80px;">
+                            <p class="" style="margin: 1rem;">没有更多记录了！</p>
+                            <p class="weui-footer__links">
+                                <a href="javascript:" class="weui-footer__link">龙芯智能锁</a>
+                            </p>
+                            <p class="weui-footer__text">Copyright &copy; 2020-2022 smart lock</p>
+                        </div>
+                    </div>
+                    <div class="full_size hidden" style="overflow: auto;">
+                        <div class="page__bd" style="margin-bottom: 80px;">
+                            <article class="weui-article">
+                                <h1>视频监控</h1>
+                                <section>
+                                    <section>
+                                        <p>
+                                            <img id="monitor_image" src="asset/empty.jpg" alt="">
+                                        </p>
+                                    </section>
+                                    <section>
+                                        <h3>信息：</h3>
+                                        <div v-if="image_info" class="weui-form-preview__bd" style="padding-top: 0;padding-bottom: 0;">
+                                            <div class="weui-form-preview__item">
+                                                <label class="weui-form-preview__label">称呼</label>
+                                                <span class="weui-form-preview__value">{{image_info.name}}</span>
+                                            </div>
+                                            <div class="weui-form-preview__item">
+                                                <label class="weui-form-preview__label">类别</label>
+                                                <span class="weui-form-preview__value">{{image_info.type}}</span>
+                                            </div>
+                                            <div class="weui-form-preview__item">
+                                                <label class="weui-form-preview__label">级别</label>
+                                                <span class="weui-form-preview__value">{{image_info.safety}}</span>
+                                            </div>
+                                        </div>
+                                        <div v-if="!image_info" class="weui-form-preview__bd" style="padding-top: 0;padding-bottom: 0;">
+                                            <div class="weui-form-preview__item">
+                                                <label class="weui-form-preview__label">提示</label>
+                                                <span class="weui-form-preview__value">未检测到人脸！</span>
+                                            </div>
+                                        </div>
+                                        <p v-if="image_info" style="padding: 1.5rem 2rem 0; text-align: center; font-size: 0.8rem; color: #777;">系统检测到当前人员的身份安全，可以放心开门！</p>
+                                    </section>
+                                </section>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui-tabbar">
+                    <div class="weui-tabbar__item weui-bar__item_on">
+                        <div style="display: inline-block; position: relative;">
+                            <i class="fas fa-lock weui-tabbar__icon"></i>
+                            <span class="weui-badge" style="position: absolute; top: -2px; right: -13px;">{{notices.length+1}}</span>
+                        </div>
+                        <p class="weui-tabbar__label">锁</p>
+                    </div>
+                    <div class="weui-tabbar__item">
+                        <div style="display: inline-block; position: relative;">
+                            <i class="fas fa-book weui-tabbar__icon"></i>
+                            <span class="weui-badge weui-badge_dot" style="position: absolute; top: 0; right: -6px;"></span>
+                        </div>
+                        <p class="weui-tabbar__label">日志</p>
+                    </div>
+                    <div class="weui-tabbar__item">
+                        <i class="fas fa-key weui-tabbar__icon"></i>
+                        <p class="weui-tabbar__label">密码</p>
+                    </div>
+                    <div class="weui-tabbar__item">
+                        <i class="fas fa-desktop weui-tabbar__icon"></i>
+                        <p class="weui-tabbar__label">监控</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--BEGIN toast-->
+        <div id="toast" style="display: none;">
+            <div class="weui-mask_transparent" style="background-color: #00000024;"></div>
+            <div class="weui-toast">
+                <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+                <p class="weui-toast__content">已完成</p>
+            </div>
+        </div>
+        <!--end toast-->
+
+        <!-- loading toast -->
+        <div id="loadingToast" style="display: none;">
+            <div class="weui-mask_transparent" style="background-color: #00000024;"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">数据加载中</p>
+            </div>
+        </div>
+    </div>
+    <audio style="display: none;" controls id="new_notice_sound">
+        <source src="asset/%E6%8F%90%E7%A4%BA%E9%9F%B3.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="js/config.js"></script>
+    <script src="js/data_type.js"></script>
+    <script src="js/jquery-3.5.1.js"></script>
+    <script src="vue-2.6.11/dist/vue.js"></script>
+    <script src="js/weui.js"></script>
+    <script src="js/communication.js"></script>
+    <script src="js/tool.js"></script>
+    <script src="js/view.js"></script>
+    <script src="js/remote_fun.js"></script>
+    <script src="js/remote_fun_callback.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+
+测试网址：
+http://locloc/lock/	首页
+http://locloc/lock/date	服务器时间
+http://locloc/lock/hello	时间戳
+http://locloc/lock/test/get_id	获取随机ID
+
+http://locloc/lock/test/protocol	HTTP协议测试
+	这个网址会获取所有你请求的所有请求信息并返回。
+	包括协议类型（POST/GET）协议版本、你的本地IP、你的本地端口、所有的cookie信息、所有的请求头、所有的请求参数。
+	并以JSON格式返回。
+
+
+AES使用这个加密模式AES/CBC/PKCS5Padding
+里面会有一个IV随机byte数组，就用tSHA减半作为IV。
+
+上次所的用SHA256(CRE0+CRE1+ID)得到AES密匙
+最好用PBKDF2(CRE0+CRE1+ID)，我们就用PBKDF2吧。其中的salt还是用tSHA
+
+
+
+

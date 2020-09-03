@@ -1,0 +1,51 @@
+body {
+    background-color: #ededed;
+}
+
+.weui-tabbar__label {
+    font-size: 1rem;
+}
+
+.full_size {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.hidden {
+    display: none;
+}
+
+.lock_open {
+    color: #10aeff;
+}
+
+.lock_open:before {
+    content: "\f13e";
+}
+
+.lock_close {
+    color: #07c160;
+}
+
+.lock_close:before {
+    content: "\f023";
+}
+
+.weui-form-preview {
+    margin: 1rem 0;
+}
+
+.weui-form-preview__hd:after {
+    display: none;
+}
+
+.weui-media-box.weui-media-box_text:before {
+    display: none;
+}
+
+.none{
+    display: none;
+}
